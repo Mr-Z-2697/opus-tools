@@ -1151,17 +1151,17 @@ int main(int argc, char **argv)
         as described in the OggOpus spec.  But for commandline tools
         like opusdec it can be desirable to exactly preserve the original
         sampling rate and duration, so we have a resampler here.*/
-      if (rate!=48000 && resampler==NULL)
-      {
-         int err;
-         resampler = speex_resampler_init(channels, 48000, rate, 5, &err);
-         if (err!=0)
-         {
-            fprintf(stderr, "resampler error: %s\n",
-             speex_resampler_strerror(err));
-         }
-         speex_resampler_skip_zeros(resampler);
-      }
+      // if (rate!=48000 && resampler==NULL)
+      // {
+      //    int err;
+      //    resampler = speex_resampler_init(channels, 48000, rate, 5, &err);
+      //    if (err!=0)
+      //    {
+      //       fprintf(stderr, "resampler error: %s\n",
+      //        speex_resampler_strerror(err));
+      //    }
+      //    speex_resampler_skip_zeros(resampler);
+      // }
       outsamp=audio_write(permuted_output?permuted_output:output, channels,
        nb_read, fout, resampler, clipmem, dither?&shapemem:0, file_output,
        rate, link_read, link_out, fp);
