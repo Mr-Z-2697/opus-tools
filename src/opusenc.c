@@ -154,6 +154,9 @@ static void usage(void)
 #endif
   printf(" --max-delay n      Set maximum container delay in milliseconds\n");
   printf("                      (0-1000, default: 1000)\n");
+#ifdef OPUS_SET_QEXT_REQUEST
+  printf(" --qext             Enable QEXT\n");
+#endif
   printf("\nMetadata options:\n");
   printf(" --title title      Set track title\n");
   printf(" --artist artist    Set artist or author, may be used multiple times\n");
@@ -340,6 +343,9 @@ static int is_valid_ctl(int request)
 #ifdef OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST
   case OPUS_SET_PHASE_INVERSION_DISABLED_REQUEST:
 #endif
+#ifdef OPUS_SET_QEXT_REQUEST
+  case OPUS_SET_QEXT_REQUEST:
+#endif
   case OPE_SET_DECISION_DELAY_REQUEST:
   case OPE_SET_MUXING_DELAY_REQUEST:
   case OPE_SET_COMMENT_PADDING_REQUEST:
@@ -465,6 +471,7 @@ int main(int argc, char **argv)
   int                complexity=10;
   int                downmix=0;
   int                no_phase_inv=0;
+  int                qext=0;
   int                *opt_ctls_ctlval;
   int                opt_ctls=0;
   int                max_ogg_delay=48000; /*48kHz samples*/
@@ -617,6 +624,8 @@ int main(int argc, char **argv)
           downmix=-1;
         } else if (strcmp(optname, "no-phase-inv")==0) {
           no_phase_inv=1;
+        } else if (strcmp(optname, "qext")==0) {
+          qext=1;
         } else if (strcmp(optname, "music")==0) {
           signal_type=OPUS_SIGNAL_MUSIC;
         } else if (strcmp(optname, "speech")==0) {
@@ -1029,6 +1038,16 @@ int main(int argc, char **argv)
     }
 #else
     fprintf(stderr,"Warning: Disabling phase inversion is not supported.\n");
+#endif
+  if (qext) {
+#ifdef OPUS_SET_QEXT_REQUEST
+    ret = ope_encoder_ctl(enc, OPUS_SET_QEXT_REQUEST(1));
+    if (ret != OPE_OK) {
+      fprintf(stderr, "Warning: OPUS_SET_QEXT_REQUEST failed: %s\n",
+        ope_strerror(ret));
+    }
+#else
+    fprintf(stderr,"Warning: QEXT is not supported.\n");
 #endif
   }
 
