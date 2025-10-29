@@ -145,7 +145,7 @@ static void usage(void)
   printf(" --speech           Tune low bitrates for speech (override automatic detection)\n");
   printf(" --comp n           Set encoding complexity (0-10, default: 10 (slowest))\n");
   printf(" --framesize n      Set maximum frame size in milliseconds\n");
-  printf("                      (2.5, 5, 10, 20, 40, 60, default: 20)\n");
+  printf("                      (2.5, 5, 10, 20, 40, 60, 80, 100, 120, default: 20)\n");
   printf(" --expect-loss n    Set expected packet loss in percent (default: 0)\n");
   printf(" --downmix-mono     Downmix to mono\n");
   printf(" --downmix-stereo   Downmix to stereo (if >2 channels)\n");
@@ -651,9 +651,12 @@ int main(int argc, char **argv)
           else if (strcmp(optarg,"20")==0) opus_frame_param=OPUS_FRAMESIZE_20_MS;
           else if (strcmp(optarg,"40")==0) opus_frame_param=OPUS_FRAMESIZE_40_MS;
           else if (strcmp(optarg,"60")==0) opus_frame_param=OPUS_FRAMESIZE_60_MS;
+          else if (strcmp(optarg,"80")==0) opus_frame_param=OPUS_FRAMESIZE_80_MS;
+          else if (strcmp(optarg,"100")==0) opus_frame_param=OPUS_FRAMESIZE_100_MS;
+          else if (strcmp(optarg,"120")==0) opus_frame_param=OPUS_FRAMESIZE_120_MS;
           else {
             fatal("Invalid framesize: %s\n"
-              "Value is in milliseconds and must be 2.5, 5, 10, 20, 40, or 60.\n",
+              "Value is in milliseconds and must be 2.5, 5, 10, 20, 40, 60, 80, 100, or 120.\n",
               optarg);
           }
           frame_size = opus_frame_param <= OPUS_FRAMESIZE_40_MS
@@ -1098,7 +1101,7 @@ int main(int argc, char **argv)
     if (data.nb_streams-data.nb_coupled>0) fprintf(stderr,
        "%s%d uncoupled", data.nb_coupled>0?", ":"",
        data.nb_streams-data.nb_coupled);
-    fprintf(stderr, "), %s\n          %0.2gms packets, %0.6g kbit/s%s\n",
+    fprintf(stderr, "), %s\n          %0.3gms packets, %0.6g kbit/s%s\n",
        channels_format_name(inopt.channels_format, chan),
        frame_size/(48000/1000.), bitrate/1000.,
        with_hard_cbr?" CBR":with_cvbr?" CVBR":" VBR");
