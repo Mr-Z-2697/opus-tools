@@ -1044,7 +1044,7 @@ int main(int argc, char **argv)
 #endif
   if (qext) {
 #ifdef OPUS_SET_QEXT_REQUEST
-    ret = ope_encoder_ctl(enc, OPUS_SET_QEXT_REQUEST(1));
+    ret = ope_encoder_ctl(enc, OPUS_SET_QEXT(1));
     if (ret != OPE_OK) {
       fprintf(stderr, "Warning: OPUS_SET_QEXT_REQUEST failed: %s\n",
         ope_strerror(ret));
