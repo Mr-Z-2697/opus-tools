@@ -992,13 +992,6 @@ int main(int argc, char **argv)
              (IMIN(48,IMAX(8,((rate<44100?rate:48000)+1000)/1000))+16)+32)>>6;
   }
 
-  if (bitrate>(1024000*chan)||bitrate<500) {
-    fatal("Error: bitrate %d bits/sec is insane\n%s"
-      "--bitrate values from 6 to 256 kbit/s per channel are meaningful.\n",
-      bitrate, bitrate>=1000000 ? "Did you mistake bits for kilobits?\n" : "");
-  }
-  bitrate=IMIN(chan*256000,bitrate);
-
   ret = ope_encoder_ctl(enc, OPUS_SET_BITRATE(bitrate));
   if (ret != OPE_OK) {
     fatal("Error: OPUS_SET_BITRATE %d failed: %s\n", bitrate, ope_strerror(ret));
