@@ -958,7 +958,7 @@ int main(int argc, char **argv)
 
   /*Initialize Opus encoder*/
   enc = ope_encoder_create_callbacks(&callbacks, &data, inopt.comments, rate,
-    chan, mapping_family, &ret, qext);
+    chan, mapping_family, &ret);
   if (enc == NULL) fatal("Error: failed to create encoder: %s\n", ope_strerror(ret));
   data.enc = enc;
 
