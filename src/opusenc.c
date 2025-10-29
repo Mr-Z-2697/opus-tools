@@ -1041,8 +1041,8 @@ int main(int argc, char **argv)
     }
 #else
     fprintf(stderr,"Warning: Disabling phase inversion is not supported.\n");
-  }
 #endif
+  }
   if (qext) {
 #ifdef OPUS_SET_QEXT_REQUEST
     ret = ope_encoder_ctl(enc, OPUS_SET_QEXT(1));
