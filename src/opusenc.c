@@ -1101,7 +1101,7 @@ int main(int argc, char **argv)
     if (data.nb_streams-data.nb_coupled>0) fprintf(stderr,
        "%s%d uncoupled", data.nb_coupled>0?", ":"",
        data.nb_streams-data.nb_coupled);
-    fprintf(stderr, "), %s\n          %0.2gms packets, %0.6g kbit/s%s\n",
+    fprintf(stderr, "), %s\n          %0.3gms packets, %0.6g kbit/s%s\n",
        channels_format_name(inopt.channels_format, chan),
        frame_size/(48000/1000.), bitrate/1000.,
        with_hard_cbr?" CBR":with_cvbr?" CVBR":" VBR");
