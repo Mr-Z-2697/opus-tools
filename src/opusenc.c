@@ -157,6 +157,9 @@ static void usage(void)
 #ifdef OPUS_SET_QEXT_REQUEST
   printf(" --qext             Enable QEXT\n");
 #endif
+#ifdef OPUS_SET_DC_FILTER_REQUEST
+  printf(" --dc-filter        Enable dc_reject filter\n");
+#endif
   printf("\nMetadata options:\n");
   printf(" --title title      Set track title\n");
   printf(" --artist artist    Set artist or author, may be used multiple times\n");
@@ -346,6 +349,9 @@ static int is_valid_ctl(int request)
 #ifdef OPUS_SET_QEXT_REQUEST
   case OPUS_SET_QEXT_REQUEST:
 #endif
+#ifdef OPUS_SET_DC_FILTER_REQUEST
+  case OPUS_SET_DC_FILTER_REQUEST:
+#endif
   case OPE_SET_DECISION_DELAY_REQUEST:
   case OPE_SET_MUXING_DELAY_REQUEST:
   case OPE_SET_COMMENT_PADDING_REQUEST:
@@ -409,6 +415,7 @@ int main(int argc, char **argv)
     {"no-phase-inv", no_argument, NULL, 0},
     {"max-delay", required_argument, NULL, 0},
     {"qext", no_argument, NULL, 0},
+    {"dc-filter", no_argument, NULL, 0},
     {"serial", required_argument, NULL, 0},
     {"save-range", required_argument, NULL, 0},
     {"set-ctl-int", required_argument, NULL, 0},
@@ -473,6 +480,7 @@ int main(int argc, char **argv)
   int                downmix=0;
   int                no_phase_inv=0;
   int                qext=0;
+  int                dc_filter=0;
   int                *opt_ctls_ctlval;
   int                opt_ctls=0;
   int                max_ogg_delay=48000; /*48kHz samples*/
@@ -628,6 +636,8 @@ int main(int argc, char **argv)
           no_phase_inv=1;
         } else if (strcmp(optname, "qext")==0) {
           qext=1;
+        } else if (strcmp(optname, "dc-filter")==0) {
+          dc_filter=1;
         } else if (strcmp(optname, "music")==0) {
           signal_type=OPUS_SIGNAL_MUSIC;
         } else if (strcmp(optname, "speech")==0) {
@@ -1052,6 +1062,17 @@ int main(int argc, char **argv)
     }
 #else
     fprintf(stderr,"Warning: QEXT is not supported.\n");
+#endif
+  }
+  if (dc_filter) {
+#ifdef OPUS_SET_DC_FILTER_REQUEST
+    ret = ope_encoder_ctl(enc, OPUS_SET_DC_FILTER(1));
+    if (ret != OPE_OK) {
+      fprintf(stderr, "Warning: OPUS_SET_DC_FILTER_REQUEST failed: %s\n",
+        ope_strerror(ret));
+    }
+#else
+    fprintf(stderr,"Warning: dc_reject filter control is not supported.\n");
 #endif
   }
 
