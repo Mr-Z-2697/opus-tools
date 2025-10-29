@@ -408,6 +408,7 @@ int main(int argc, char **argv)
     {"no-downmix",no_argument,NULL, 0},
     {"no-phase-inv", no_argument, NULL, 0},
     {"max-delay", required_argument, NULL, 0},
+    {"qext", no_argument, NULL, 0},
     {"serial", required_argument, NULL, 0},
     {"save-range", required_argument, NULL, 0},
     {"set-ctl-int", required_argument, NULL, 0},
