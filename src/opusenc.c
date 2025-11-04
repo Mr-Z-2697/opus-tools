@@ -141,6 +141,9 @@ static void usage(void)
   printf(" --vbr              Use variable bitrate encoding (default)\n");
   printf(" --cvbr             Use constrained variable bitrate encoding\n");
   printf(" --hard-cbr         Use hard constant bitrate encoding\n");
+  printf(" --application app  Set application (audio, voip, low-dealy, [silk, celt])\n");
+  printf("                      (default: audio)\n");
+  printf("                      [silk, celt]: require compile time header support.\n");
   printf(" --music            Tune low bitrates for music (override automatic detection)\n");
   printf(" --speech           Tune low bitrates for speech (override automatic detection)\n");
   printf(" --comp n           Set encoding complexity (0-10, default: 10 (slowest))\n");
@@ -403,6 +406,7 @@ int main(int argc, char **argv)
     {"hard-cbr",no_argument,NULL, 0},
     {"vbr",no_argument,NULL, 0},
     {"cvbr",no_argument,NULL, 0},
+    {"application", required_argument, NULL, 0},
     {"music", no_argument, NULL, 0},
     {"speech", no_argument, NULL, 0},
     {"comp", required_argument, NULL, 0},
@@ -474,6 +478,7 @@ int main(int argc, char **argv)
   int                chan=2;
   int                with_hard_cbr=0;
   int                with_cvbr=0;
+  int                application=OPUS_APPLICATION_AUDIO;
   int                signal_type=OPUS_AUTO;
   int                expect_loss=0;
   int                complexity=10;
@@ -583,6 +588,23 @@ int main(int argc, char **argv)
         } else if (strcmp(optname, "vbr")==0) {
           with_cvbr=0;
           with_hard_cbr=0;
+        } else if (strcmp(optname, "application")==0) {
+          if (strcmp(optarg, "audio")==0)
+            application = OPUS_APPLICATION_AUDIO;
+          else if (strcmp(optarg, "voip")==0)
+            application = OPUS_APPLICATION_VOIP;
+          else if (strcmp(optarg, "low-delay")==0)
+            application = OPUS_APPLICATION_RESTRICTED_LOWDELAY;
+#ifdef OPUS_APPLICATION_RESTRICTED_SILK
+          else if (strcmp(optarg, "silk")==0)
+            application = OPUS_APPLICATION_RESTRICTED_SILK;
+#endif
+#ifdef OPUS_APPLICATION_RESTRICTED_CELT
+          else if (strcmp(optarg, "celt")==0)
+            application = OPUS_APPLICATION_RESTRICTED_CELT;
+#endif
+          else
+            fatal("Invalid application: %s\n", optarg);          
         } else if (strcmp(optname, "help")==0) {
           usage();
           exit(0);
@@ -963,8 +985,8 @@ int main(int argc, char **argv)
   }
 
   /*Initialize Opus encoder*/
-  enc = ope_encoder_create_callbacks(&callbacks, &data, inopt.comments, rate,
-    chan, mapping_family, &ret);
+  enc = ope_encoder_create_callbacks_mod(&callbacks, &data, inopt.comments, rate,
+    chan, mapping_family, application, &ret);
   if (enc == NULL) fatal("Error: failed to create encoder: %s\n", ope_strerror(ret));
   data.enc = enc;
 
@@ -1117,6 +1139,12 @@ int main(int argc, char **argv)
     else if (opus_app==OPUS_APPLICATION_VOIP) fprintf(stderr, " (VoIP)\n");
     else if (opus_app==OPUS_APPLICATION_AUDIO) fprintf(stderr, " (audio)\n");
     else if (opus_app==OPUS_APPLICATION_RESTRICTED_LOWDELAY) fprintf(stderr, " (low-delay)\n");
+#ifdef OPUS_APPLICATION_RESTRICTED_SILK
+    else if (opus_app==OPUS_APPLICATION_RESTRICTED_SILK) fprintf(stderr, " (SILK only)\n");
+#endif
+#ifdef OPUS_APPLICATION_RESTRICTED_CELT
+    else if (opus_app==OPUS_APPLICATION_RESTRICTED_CELT) fprintf(stderr, " (CELT only)\n");
+#endif
     else fprintf(stderr, " (unknown application)\n");
     fprintf(stderr, "-----------------------------------------------------\n");
     fprintf(stderr, "   Input: %s, %0.6g kHz, %d channel%s, %s\n",
