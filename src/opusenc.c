@@ -1111,6 +1111,12 @@ int main(int argc, char **argv)
     else if (opus_app==OPUS_APPLICATION_VOIP) fprintf(stderr, " (VoIP)\n");
     else if (opus_app==OPUS_APPLICATION_AUDIO) fprintf(stderr, " (audio)\n");
     else if (opus_app==OPUS_APPLICATION_RESTRICTED_LOWDELAY) fprintf(stderr, " (low-delay)\n");
+#ifdef OPUS_APPLICATION_RESTRICTED_SILK
+    else if (opus_app==OPUS_APPLICATION_RESTRICTED_SILK) fprintf(stderr, " (SILK only)\n");
+#endif
+#ifdef OPUS_APPLICATION_RESTRICTED_CELT
+    else if (opus_app==OPUS_APPLICATION_RESTRICTED_CELT) fprintf(stderr, " (CELT only)\n");
+#endif
     else fprintf(stderr, " (unknown application)\n");
     fprintf(stderr, "-----------------------------------------------------\n");
     fprintf(stderr, "   Input: %s, %0.6g kHz, %d channel%s, %s\n",
