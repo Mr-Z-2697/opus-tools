@@ -592,7 +592,7 @@ int main(int argc, char **argv)
           if (strcmp(optarg, "audio")==0)
             application = OPUS_APPLICATION_AUDIO;
           else if (strcmp(optarg, "voip")==0)
-            application = OPUS_APPLICATION_AUDIO;
+            application = OPUS_APPLICATION_VOIP;
           else if (strcmp(optarg, "low-delay")==0)
             application = OPUS_APPLICATION_RESTRICTED_LOWDELAY;
 #ifdef OPUS_APPLICATION_RESTRICTED_SILK
