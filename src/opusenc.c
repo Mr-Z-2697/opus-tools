@@ -141,9 +141,11 @@ static void usage(void)
   printf(" --vbr              Use variable bitrate encoding (default)\n");
   printf(" --cvbr             Use constrained variable bitrate encoding\n");
   printf(" --hard-cbr         Use hard constant bitrate encoding\n");
+#ifdef Z_OPE_ENCODER_CREATE_CALLBACKS_MOD
   printf(" --application app  Set application (audio, voip, low-dealy, [silk, celt])\n");
   printf("                      (default: audio)\n");
   printf("                      [silk, celt]: require compile time header support.\n");
+#endif
   printf(" --music            Tune low bitrates for music (override automatic detection)\n");
   printf(" --speech           Tune low bitrates for speech (override automatic detection)\n");
   printf(" --comp n           Set encoding complexity (0-10, default: 10 (slowest))\n");
@@ -985,8 +987,16 @@ int main(int argc, char **argv)
   }
 
   /*Initialize Opus encoder*/
+#ifdef Z_OPE_ENCODER_CREATE_CALLBACKS_MOD
   enc = ope_encoder_create_callbacks_mod(&callbacks, &data, inopt.comments, rate,
     chan, mapping_family, application, &ret);
+#else
+  if (application != OPUS_APPLICATION_AUDIO) {
+    fatal("Error: setting application at encoder creation is not supported by this build.\n");
+  }
+  enc = ope_encoder_create_callbacks(&callbacks, &data, inopt.comments, rate,
+    chan, mapping_family, &ret);
+#endif
   if (enc == NULL) fatal("Error: failed to create encoder: %s\n", ope_strerror(ret));
   data.enc = enc;
 
