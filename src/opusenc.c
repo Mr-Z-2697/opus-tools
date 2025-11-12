@@ -986,7 +986,7 @@ int main(int argc, char **argv)
     chan, mapping_family, application, &ret);
 #else
   if (application != OPUS_APPLICATION_AUDIO) {
-    fatal("Error: setting application at encoder creation is not supported by this build.\n")
+    fatal("Error: setting application at encoder creation is not supported by this build.\n");
   }
   enc = ope_encoder_create_callbacks(&callbacks, &data, inopt.comments, rate,
     chan, mapping_family, &ret);
