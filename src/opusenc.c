@@ -579,6 +579,12 @@ int main(int argc, char **argv)
        break;
 
     switch (c) {
+      case 'A':
+        c = 0;
+        option_index = 5;
+        break;
+    }
+    switch (c) {
       case 0:
         optname = long_options[option_index].name;
         save_cmd = 1;
@@ -896,24 +902,6 @@ int main(int argc, char **argv)
       case 'V':
         opustoolsversion(opus_version);
         exit(0);
-        break;
-      case 'A':
-        if (strcmp(optarg, "audio")==0)
-          application = OPUS_APPLICATION_AUDIO;
-        else if (strcmp(optarg, "voip")==0)
-          application = OPUS_APPLICATION_VOIP;
-        else if (strcmp(optarg, "low-delay")==0)
-          application = OPUS_APPLICATION_RESTRICTED_LOWDELAY;
-#ifdef OPUS_APPLICATION_RESTRICTED_SILK
-        else if (strcmp(optarg, "silk")==0)
-          application = OPUS_APPLICATION_RESTRICTED_SILK;
-#endif
-#ifdef OPUS_APPLICATION_RESTRICTED_CELT
-        else if (strcmp(optarg, "celt")==0)
-          application = OPUS_APPLICATION_RESTRICTED_CELT;
-#endif
-        else
-          fatal("Invalid application: %s\n", optarg);
         break;
       case '?':
         usage();
