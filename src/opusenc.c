@@ -574,7 +574,7 @@ int main(int argc, char **argv)
     int option_index;
     const char *optname;
 
-    c=getopt_long(argc_utf8, argv_utf8, "hVA:B:CEF:HIMP:QS", long_options, &option_index);
+    c=getopt_long(argc_utf8, argv_utf8, ":hVA:B:CEF:HIMP:QS", long_options, &option_index);
     if (c==-1)
        break;
 
@@ -626,6 +626,9 @@ int main(int argc, char **argv)
       case '?':
         usage();
         exit(1);
+        break;
+      case ':':
+        fatal("Option requires value\n");
         break;
     }
 
