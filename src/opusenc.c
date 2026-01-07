@@ -142,9 +142,15 @@ static void usage(void)
   printf(" --cvbr             Use constrained variable bitrate encoding\n");
   printf(" --hard-cbr         Use hard constant bitrate encoding\n");
 #ifdef Z_OPE_ENCODER_CREATE_CALLBACKS_MOD
-  printf(" --application app  Set application (audio, voip, low-dealy, [silk, celt])\n");
-  printf("                      (default: audio)\n");
-  printf("                      [silk, celt]: require compile time header support.\n");
+  printf(" -A, --application app  Set application (audio, voip, low-dealy, [silk, celt])\n");
+  printf("                          (default: audio)\n");
+  printf("                          [silk, celt]: require compile time header support\n");
+#ifdef OPUS_APPLICATION_RESTRICTED_SILK
+  printf("                          [silk]: available\n");
+#endif
+#ifdef OPUS_APPLICATION_RESTRICTED_CELT
+  printf("                          [celt]: available\n");
+#endif
 #endif
   printf(" --music            Tune low bitrates for music (override automatic detection)\n");
   printf(" --speech           Tune low bitrates for speech (override automatic detection)\n");
@@ -568,7 +574,7 @@ int main(int argc, char **argv)
     int option_index;
     const char *optname;
 
-    c=getopt_long(argc_utf8, argv_utf8, "hV", long_options, &option_index);
+    c=getopt_long(argc_utf8, argv_utf8, "hVA:", long_options, &option_index);
     if (c==-1)
        break;
 
@@ -890,6 +896,24 @@ int main(int argc, char **argv)
       case 'V':
         opustoolsversion(opus_version);
         exit(0);
+        break;
+      case 'A':
+        if (strcmp(optarg, "audio")==0)
+          application = OPUS_APPLICATION_AUDIO;
+        else if (strcmp(optarg, "voip")==0)
+          application = OPUS_APPLICATION_VOIP;
+        else if (strcmp(optarg, "low-delay")==0)
+          application = OPUS_APPLICATION_RESTRICTED_LOWDELAY;
+#ifdef OPUS_APPLICATION_RESTRICTED_SILK
+        else if (strcmp(optarg, "silk")==0)
+          application = OPUS_APPLICATION_RESTRICTED_SILK;
+#endif
+#ifdef OPUS_APPLICATION_RESTRICTED_CELT
+        else if (strcmp(optarg, "celt")==0)
+          application = OPUS_APPLICATION_RESTRICTED_CELT;
+#endif
+        else
+          fatal("Invalid application: %s\n", optarg);
         break;
       case '?':
         usage();
