@@ -135,12 +135,12 @@ static void usage(void)
   printf(" -h, --help         Show this help\n");
   printf(" -V, --version      Show version information\n");
   printf(" --help-picture     Show help on attaching album art\n");
-  printf(" --quiet            Enable quiet mode\n");
+  printf(" -Q, --quiet        Enable quiet mode\n");
   printf("\nEncoding options:\n");
-  printf(" --bitrate n.nnn    Set target bitrate in kbit/s (6-256/channel)\n");
+  printf(" -B, --bitrate n.n  Set target bitrate in kbit/s (6-256/channel)\n");
   printf(" --vbr              Use variable bitrate encoding (default)\n");
-  printf(" --cvbr             Use constrained variable bitrate encoding\n");
-  printf(" --hard-cbr         Use hard constant bitrate encoding\n");
+  printf(" -C, --cvbr         Use constrained variable bitrate encoding\n");
+  printf(" -H, --hard-cbr     Use hard constant bitrate encoding\n");
 #ifdef Z_OPE_ENCODER_CREATE_CALLBACKS_MOD
   printf(" -A, --application app  Set application (audio, voip, low-dealy, [silk, celt])\n");
   printf("                          (default: audio)\n");
@@ -152,10 +152,10 @@ static void usage(void)
   printf("                          [celt]: available\n");
 #endif
 #endif
-  printf(" --music            Tune low bitrates for music (override automatic detection)\n");
-  printf(" --speech           Tune low bitrates for speech (override automatic detection)\n");
+  printf(" -M, --music        Tune low bitrates for music (override automatic detection)\n");
+  printf(" -S, --speech       Tune low bitrates for speech (override automatic detection)\n");
   printf(" --comp n           Set encoding complexity (0-10, default: 10 (slowest))\n");
-  printf(" --framesize n      Set maximum frame size in milliseconds\n");
+  printf(" -F, --framesize n  Set maximum frame size in milliseconds\n");
   printf("                      (2.5, 5, 10, 20, 40, 60, 80, 100, 120, default: 20)\n");
   printf(" --expect-loss n    Set expected packet loss in percent (default: 0)\n");
   printf(" --downmix-mono     Downmix to mono\n");
@@ -166,7 +166,7 @@ static void usage(void)
   printf(" --max-delay n      Set maximum container delay in milliseconds\n");
   printf("                      (0-1000, default: 1000)\n");
 #ifdef OPUS_SET_QEXT_REQUEST
-  printf(" --qext             Enable QEXT\n");
+  printf(" -E, --qext         Enable QEXT\n");
 #endif
 #ifdef OPUS_SET_DC_FILTER_REQUEST
   printf(" --dc-filter        Enable dc_reject filter\n");
@@ -182,7 +182,7 @@ static void usage(void)
   printf("                      This may be used multiple times\n");
   printf(" --picture file     Attach album art (see --help-picture)\n");
   printf("                      This may be used multiple times\n");
-  printf(" --padding n        Reserve n extra bytes for metadata (default: 512)\n");
+  printf(" -P, --padding n    Reserve n extra bytes for metadata (default: 512)\n");
   printf(" --discard-comments Don't keep metadata when transcoding\n");
   printf(" --discard-pictures Don't keep pictures when transcoding\n");
   printf("\nInput options:\n");
@@ -192,7 +192,7 @@ static void usage(void)
   printf(" --raw-rate n       Set sampling rate for raw input (default: 48000)\n");
   printf(" --raw-chan n       Set number of channels for raw input (default: 2)\n");
   printf(" --raw-endianness n 1 for big endian, 0 for little (default: 0)\n");
-  printf(" --ignorelength     Ignore the data length in Wave headers\n");
+  printf(" -I, --ignorelength Ignore the data length in Wave headers\n");
   printf(" --channels fmt     Override the format of the input channels (ambix, discrete)\n");
   printf("\nDiagnostic options:\n");
   printf(" --serial n         Force use of a specific stream serial number\n");
@@ -574,19 +574,62 @@ int main(int argc, char **argv)
     int option_index;
     const char *optname;
 
-    c=getopt_long(argc_utf8, argv_utf8, "hVA:", long_options, &option_index);
+    c=getopt_long(argc_utf8, argv_utf8, "hVA:B:CEF:HIMP:QS", long_options, &option_index);
     if (c==-1)
        break;
 
     switch (c) {
-      case 'A':
-        c = 0;
-        option_index = 5;
-        break;
-    }
-    switch (c) {
       case 0:
         optname = long_options[option_index].name;
+        break;
+      case 'A':
+        c = 0;
+        optname = "application";
+        break;
+      case 'B':
+        c = 0;
+        optname = "bitrate";
+        break;
+      case 'C':
+        c = 0;
+        optname = "cvbr";
+        break;
+      case 'E':
+        c = 0;
+        optname = "qext";
+        break;
+      case 'F':
+        c = 0;
+        optname = "framesize";
+        break;
+      case 'H':
+        c = 0;
+        optname = "hard-cbr";
+        break;
+      case 'I':
+        c = 0;
+        optname = "ignorelength";
+        break;
+      case 'M':
+        c = 0;
+        optname = "music";
+        break;
+      case 'P':
+        c = 0;
+        optname = "padding";
+        break;
+      case 'Q':
+        c = 0;
+        optname = "quiet";
+        break;
+      case 'S':
+        c = 0;
+        optname = "speech";
+        break;
+    }
+
+    switch (c) {
+      case 0:
         save_cmd = 1;
         if (strcmp(optname, "quiet")==0) {
           quiet=1;
