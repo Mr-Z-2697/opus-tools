@@ -583,52 +583,53 @@ int main(int argc, char **argv)
         optname = long_options[option_index].name;
         break;
       case 'A':
-        c = 0;
         optname = "application";
         break;
       case 'B':
-        c = 0;
         optname = "bitrate";
         break;
       case 'C':
-        c = 0;
         optname = "cvbr";
         break;
       case 'E':
-        c = 0;
         optname = "qext";
         break;
       case 'F':
-        c = 0;
         optname = "framesize";
         break;
       case 'H':
-        c = 0;
         optname = "hard-cbr";
         break;
       case 'I':
-        c = 0;
         optname = "ignorelength";
         break;
       case 'M':
-        c = 0;
         optname = "music";
         break;
       case 'P':
-        c = 0;
         optname = "padding";
         break;
       case 'Q':
-        c = 0;
         optname = "quiet";
         break;
       case 'S':
-        c = 0;
         optname = "speech";
+        break;
+      case 'h':
+        usage();
+        exit(0);
+        break;
+      case 'V':
+        opustoolsversion(opus_version);
+        exit(0);
+        break;
+      case '?':
+        usage();
+        exit(1);
         break;
     }
 
-    switch (c) {
+    switch (0) { /* no function but for the sake of making merge possible upstream commits easier, keep the structure */
       case 0:
         save_cmd = 1;
         if (strcmp(optname, "quiet")==0) {
@@ -937,18 +938,6 @@ int main(int argc, char **argv)
             }
           }
         }
-        break;
-      case 'h':
-        usage();
-        exit(0);
-        break;
-      case 'V':
-        opustoolsversion(opus_version);
-        exit(0);
-        break;
-      case '?':
-        usage();
-        exit(1);
         break;
     }
   }
